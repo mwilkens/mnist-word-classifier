@@ -3,6 +3,22 @@
 Reads words and letters from images and outputs them
 Trained by the MNIST Letter database
 
+## Tasks List
+
+1. Prep sample images ( with handwritten words ) (should have some constructed with MNIST letters)
+2. **[DONE]** Create some way of sharing our code with each other (github probably)
+3. Create framework algorithm with dummy functions as classifiers
+    1. **[DONE]** parse the MNIST files
+    2. Classifier training implimentation
+    3. Read image from file (_what format?_)
+    4. Convolve through image
+    5. Mark centroids and letters where we find them
+    6. construct word and output string
+4. Create letter classifier
+5. Create MNIST classifier
+6. Create Word construction algorithm
+7. Create presentation!!!
+
 ## MNIST Classifier
 
 Training Function
@@ -13,11 +29,9 @@ Training Function
 
 Predicting Function
 
-    (inputs: NxN* image)
+    (inputs: 20x20 image)
 
     (outputs: letter, loss)
-
-\* what is N
 
 ## Letter Classifier
 
@@ -34,6 +48,19 @@ Predicting Function
     (outputs: prediction probability)
 
 \* MNIST database? maybe with some random blanks?
+
+Use MSER Feature Detection?
+* https://www.mathworks.com/help/vision/examples/automatically-detect-and-recognize-text-in-natural-images.html
+* (This would deviate from our algorithm)
+
+## Word Constructor
+
+Constructor Function
+
+    (inputs: letter array, centroids array)
+
+    (outputs: string)
+
 
 ## Algorithm
 
