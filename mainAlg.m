@@ -7,18 +7,27 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-[mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, TRAINLBL_FILE, 1000, 0);
-[mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, TESTLBL_FILE, 1000, 0);
+[mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, TRAINLBL_FILE, 60000, 0);
+[mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, TESTLBL_FILE, 10000, 0);
 
-%[mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, mnistTestImg, mnistTestLbl);
+[mnistNet, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, mnistTestImg, mnistTestLbl);
 
-%w,h,d] = size(mnistTestImg);
+class = 3;
 
-%letters = predict(mnistMdl, reshape(mnistTestImg, [w*h,d])');
+% find a digit from the test set
+img = findDigit( mnistTestImg, mnistTestLbl, class);
 
-%results = table(mnistTestLbl, letters, 'VariableNames', {'Actual','Predicted'});
+figure
+subplot(2,1,1)
+pClass = mnistClassify( mnistNet, img);
+plotNumber ( mnistTrainImg, mnistTrainLbl, pClass);
+title("Predicted Digit");
 
-plotNumber( mnistTrainImg, mnistTrainLbl, [1 2 3 4 5 6]);
+subplot(2,1,2)
+plotNumber ( mnistTrainImg, mnistTrainLbl, class);
+title("Actual Digit");
+
+%plotNumber( mnistTrainImg, mnistTrainLbl, [1 2 3 4 5 6]);
 
 function plotDigit(arr, ltrIdx)
 % plotDigit - plots a digit of the MNIST training set
