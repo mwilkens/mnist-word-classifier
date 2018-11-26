@@ -1,6 +1,6 @@
 % This function will train the mnistModel with training and
 % test data, will output the loss
-function [net, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
+function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
 
     % will downsampling help here?
     %trainImg = arrayfun( @(x) subSample(x,1.2), trainImg);
@@ -11,35 +11,56 @@ function [net, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
     [w,h,d] = size(testImg);    
     testing = reshape( testImg, [w*h,d])';
     
-    ndata = [training;testing]';
-    nlbl  = [trainLbl;testLbl]';
+    net = 0;
     
-    trainS = length(trainLbl);
-    testS  = length(testLbl);
-    totalS = trainS + testS;
-    trainRatio = trainS/totalS;
+    if net==1
     
-    optimize = 0;
-    
-    if optimize == 1
-        N = 30;
-        loss = zeros (1, N);
+        ndata = [training;testing]';
+        nlbl  = [trainLbl;testLbl]';
 
-        for k = 1:N
-            [net, l] = fitNet(ndata, nlbl, k, trainRatio);
-            loss(k) = l;
+        trainS = length(trainLbl);
+        testS  = length(testLbl);
+        totalS = trainS + testS;
+        trainRatio = trainS/totalS;
+
+        optimize = 0;
+
+        if optimize == 1
+            N = 30;
+            perf = zeros (1, N);
+
+            for k = 1:N
+                [net, l] = fitNet(ndata, nlbl, k, trainRatio);
+                perf(k) = l;
+            end
+
+            %plot(loss)
+
+            % find the best node combo
+            [~, idx] = min(perf);
         end
 
-        %plot(loss)
+        idx = 10; % override
 
-        % find the best node combo
-        [~, idx] = min(loss);
+        % train the correct net    
+        [mdl,l] = fitNet(ndata,nlbl,idx,trainRatio);
     end
     
-    idx = 10; % override
-    
-    % train the correct net    
-    [net,l] = fitNet(ndata,nlbl,idx,trainRatio);
+    if net==0
+        
+       l = zeros(2,10);
+        
+       for i = 1:10
+           mdl = fitcknn(training, trainLbl, 'NumNeighbors',i);
+           l(:,i) = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+           i
+       end
+       
+       [~, idx] = min(l(1,:));
+       mdl = fitcknn(training, trainLbl, 'NumNeighbors',idx);
+       %l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+       
+    end
 end
 
 function [img] = subSample(fullimg)
@@ -57,7 +78,7 @@ function [net, l] = fitNet(data,lbl,nodes,tr)
     net.layers{1}.transferFcn = 'tansig';
     net.trainFcn = 'trainrp';
 
-    [net, tr] = train(net, data, lbl);
+    [net, ~] = train(net, data, lbl);
     ypred = net(data);
 
     l = perform(net,lbl,ypred);
