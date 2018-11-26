@@ -10,7 +10,7 @@ Trained by the MNIST Letter database
 3. Create framework algorithm with dummy functions as classifiers
     1. **[DONE]** parse the MNIST files
     2. Classifier training implimentation
-    3. Read image from file (_what format?_)
+    3. Read image from file (_what format?_) - .jpg is pretty standard
     4. Convolve through image
     5. Mark centroids and letters where we find them
     6. **[DONE]** construct word and output string
