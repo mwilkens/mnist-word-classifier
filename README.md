@@ -13,7 +13,7 @@ Trained by the MNIST Letter database
     3. Read image from file (_what format?_)
     4. Convolve through image
     5. Mark centroids and letters where we find them
-    6. construct word and output string
+    6. **[DONE]** construct word and output string
 4. Create letter classifier
 5. Create MNIST classifier
 6. Create Word construction algorithm
