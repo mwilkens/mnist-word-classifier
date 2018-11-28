@@ -1,6 +1,6 @@
 % This function will train the mnistModel with training and
 % test data, will output the loss
-function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
+function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
 
     % will downsampling help here?
     %trainImg = arrayfun( @(x) subSample(x,1.2), trainImg);
@@ -11,9 +11,16 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
     [w,h,d] = size(testImg);    
     testing = reshape( testImg, [w*h,d])';
     
-    net = 0;
+    if strcmp(model,'svm')
+        
+    end
     
-    if net==1
+    if strcmp(model,'tree')
+       mdl = fitctree(training, trainLbl);
+       l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+    end
+    
+    if strcmp(model,'net')
     
         ndata = [training;testing]';
         nlbl  = [trainLbl;testLbl]';
@@ -46,7 +53,7 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
         [mdl,l] = fitNet(ndata,nlbl,idx,trainRatio);
     end
     
-    if net==0
+    if strcmp(model,'knn')
         
        l = zeros(2,10);
         
@@ -58,7 +65,7 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl)
        
        [~, idx] = min(l(1,:));
        mdl = fitcknn(training, trainLbl, 'NumNeighbors',idx);
-       %l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+       l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
        
     end
 end

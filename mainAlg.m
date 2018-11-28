@@ -36,49 +36,56 @@ end
 %  Train the letter classifier on MNIST data %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-train = 0;
+train = 1;
+
+model = 'tree';
 
 if train == 1
 % neural network loss: 0.3425 (patternnet, 10 nodes, 10-fold crossval)
 % K-Nearest Neighbors (4 NN) loss: training: 0.0841, testing: 0.03811
     [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, ...
-                                            mnistTestImg, mnistTestLbl);
+                                            mnistTestImg, mnistTestLbl, ...
+                                            model);
 end
-
-return
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Find and detect letters in a sample image %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% image to classify
-image = imread("test_images/test3.png");
-I = rgb2gray(image);
+mser = 0;
 
-letters = textDetection(I);
+if mser==1
+    % image to classify
+    image = imread("test_images/test3.png");
+    I = rgb2gray(image);
 
-hold on
+    letters = textDetection(I);
 
-% plot the image as a scatter
-[w,h] = size(I);
-[X,Y] = meshgrid(1:w,1:h);
-X = reshape(X,[w*h,1]);
-Y = reshape(Y,[w*h,1]);
-S = 50*(normalize(reshape(I',[w*h,1]), 'range'))+1;
-scatter(Y,X, S, '.');
+    hold on
 
-scatter(letters.Location(:,1),letters.Location(:,2), 'go');
+    % plot the image as a scatter
+    [w,h] = size(I);
+    [X,Y] = meshgrid(1:w,1:h);
+    X = reshape(X,[w*h,1]);
+    Y = reshape(Y,[w*h,1]);
+    S = 50*(normalize(reshape(I',[w*h,1]), 'range'))+1;
+    scatter(Y,X, S, '.');
+
+    scatter(letters.Location(:,1),letters.Location(:,2), 'go');
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Classify the detected letters %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+class = 9;
 
 % find a digit from the test set
 img = findDigit( mnistTestImg, mnistTestLbl, class);
 
 figure
 subplot(2,2,1)
-[pClass, pLoss] = mnistClassify( mnistMdl, img);
+[pClass, pLoss] = mnistClassify( mnistMdl, img, model);
 plotNumber ( mnistTrainImg, mnistTrainLbl, pClass);
 title("Predicted Digit");
 
@@ -91,11 +98,11 @@ bar(0:9,pLoss)
 title("Digit Probability")
 
 subplot(2,2,4)
-plot(1:10, mnistLoss(1,:), 1:10, mnistLoss(2,:));
-legend("Testing Loss", "Training Loss");
-xlabel("# of Nearest Neighbors")
-ylabel("Loss")
-title("Performance estimate for KNN Parameter Optimization")
+%plot(1:10, mnistLoss(1,:), 1:10, mnistLoss(2,:));
+%legend("Testing Loss", "Training Loss");
+%xlabel("# of Nearest Neighbors")
+%ylabel("Loss")
+%title("Performance estimate for KNN Parameter Optimization")
 
 %plotNumber( mnistTrainImg, mnistTrainLbl, [1 2 3 4 5 6]);
 
