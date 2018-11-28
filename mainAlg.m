@@ -20,12 +20,16 @@ if exist('mnistTrainImg')
     [~,~,trainsize] = size(mnistTrainImg);
     [~,~,testsize]  = size(mnistTrainImg);
     if (trainsize ~= TRNN)||(testsize ~= TSTN)
-        [mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, TRAINLBL_FILE, TRNN, 0);
-        [mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, TESTLBL_FILE, TSTN, 0);
+        [mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, ...
+                                                TRAINLBL_FILE, TRNN, 0);
+        [mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, ...
+                                                TESTLBL_FILE, TSTN, 0);
     end
 else
-    [mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, TRAINLBL_FILE, TRNN, 0);
-    [mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, TESTLBL_FILE, TSTN, 0);
+    [mnistTrainImg, mnistTrainLbl] = mnistParse(TRAINIMG_FILE, ...
+                                                TRAINLBL_FILE, TRNN, 0);
+    [mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, ...
+                                                TESTLBL_FILE, TSTN, 0);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +41,8 @@ train = 0;
 if train == 1
 % neural network loss: 0.3425 (patternnet, 10 nodes, 10-fold crossval)
 % K-Nearest Neighbors (4 NN) loss: training: 0.0841, testing: 0.03811
-    [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, mnistTestImg, mnistTestLbl);
+    [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, ...
+                                            mnistTestImg, mnistTestLbl);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -5,7 +5,8 @@ function [ltrs] = textDetection(image)
     plot = 0;
 
     %Pt.1: Detect Candadite Text Region using MSER
-    [mserRegions,mserConnComp] = detectMSERFeatures(image,'RegionAreaRange', [200,8000], 'ThresholdDelta', 4);
+    [mserRegions,mserConnComp] = detectMSERFeatures(image, ...
+                'RegionAreaRange', [200,8000], 'ThresholdDelta', 4);
     
     if plot == 1
         figure; 
@@ -17,7 +18,8 @@ function [ltrs] = textDetection(image)
     end
 
     %Part 2: 
-    mserStats = regionprops(mserConnComp, 'BoundingBox', 'Eccentricity','Solidity','Extent','Euler','Image'); 
+    mserStats = regionprops(mserConnComp, 'BoundingBox', ...
+                'Eccentricity','Solidity','Extent','Euler','Image'); 
     bbox = vertcat(mserStats.BoundingBox);
     w = bbox(:,3);
     h = bbox(:,4);
@@ -25,7 +27,8 @@ function [ltrs] = textDetection(image)
     filterIdx  = aspectRatio' > 3; 
     filterIdx = filterIdx | [mserStats.Eccentricity] > .995; 
     filterIdx = filterIdx | [mserStats.Solidarity] < .3;
-    filterIdx = filterIdx | [mserStats.Extent] < 0.2 | [mserStats.Extent] > 0.9;
+    filterIdx = filterIdx | [mserStats.Extent] < 0.2 | ...
+                                            [mserStats.Extent] > 0.9;
     filterIdx = filterIdx | [mserStats.EulerNumber] < -4; 
     mserStats(filterIdx) = []; 
     mserRegions(filterIdx) = []; 
@@ -35,7 +38,7 @@ function [ltrs] = textDetection(image)
         imshow(I); 
         hold on; 
         plot(mserRegions, 'showPixelList', true,'showEllipses',false);
-        title('After Removing Non-Text Regions Based On Geometric Properties');
+        title('After Removing Non-Text Regions Based On Geometry');
         hold off;  
     end
 
