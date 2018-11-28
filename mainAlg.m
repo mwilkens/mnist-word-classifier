@@ -45,17 +45,29 @@ if train == 1
                                             mnistTestImg, mnistTestLbl);
 end
 
+return
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Find and detect letters in a sample image %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % image to classify
-image = imread("test_images/test1.png");
+image = imread("test_images/test3.png");
 I = rgb2gray(image);
 
 letters = textDetection(I);
 
-return
+hold on
+
+% plot the image as a scatter
+[w,h] = size(I);
+[X,Y] = meshgrid(1:w,1:h);
+X = reshape(X,[w*h,1]);
+Y = reshape(Y,[w*h,1]);
+S = 50*(normalize(reshape(I',[w*h,1]), 'range'))+1;
+scatter(Y,X, S, '.');
+
+scatter(letters.Location(:,1),letters.Location(:,2), 'go');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Classify the detected letters %
