@@ -1,7 +1,9 @@
-% image to classify
-image = "testImage.png";
+% Main algorithm for MNIST classification
 
 % Files for MNIST
+% if you don't have these you can download them at:
+% http://yann.lecun.com/exdb/mnist/ 
+% unzip them using "gunzip -d *-ubyte.gz"
 TESTIMG_FILE = "t10k-images-idx3-ubyte";
 TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
@@ -9,6 +11,10 @@ TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
 TRNN = 6000;
 TSTN = 1000;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Extract the images from MNIST files    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist('mnistTrainImg')
     [~,~,trainsize] = size(mnistTrainImg);
@@ -22,9 +28,33 @@ else
     [mnistTestImg, mnistTestLbl] = mnistParse(TESTIMG_FILE, TESTLBL_FILE, TSTN, 0);
 end
 
-[mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, mnistTestImg, mnistTestLbl);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Train the letter classifier on MNIST data %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-class = 9;
+train = 0;
+
+if train == 1
+% neural network loss: 0.3425 (patternnet, 10 nodes, 10-fold crossval)
+% K-Nearest Neighbors (4 NN) loss: training: 0.0841, testing: 0.03811
+    [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, mnistTestImg, mnistTestLbl);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Find and detect letters in a sample image %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% image to classify
+image = imread("test_images/test1.png");
+I = rgb2gray(image);
+
+letters = textDetection(I);
+
+return
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Classify the detected letters %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % find a digit from the test set
 img = findDigit( mnistTestImg, mnistTestLbl, class);
@@ -51,6 +81,10 @@ ylabel("Loss")
 title("Performance estimate for KNN Parameter Optimization")
 
 %plotNumber( mnistTrainImg, mnistTrainLbl, [1 2 3 4 5 6]);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Supplimentary Functions %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plotDigit(arr, ltrIdx)
 % plotDigit - plots a digit of the MNIST training set
