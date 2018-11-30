@@ -36,9 +36,9 @@ end
 %  Train the letter classifier on MNIST data %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-train = 1;
+train = 0;
 
-model = 'tree';
+model = 'knn';
 
 if train == 1
 % neural network loss: 0.3425 (patternnet, 10 nodes, 10-fold crossval)
@@ -52,52 +52,42 @@ end
 %  Find and detect letters in a sample image %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mser = 0;
+mser = 1;
 
 if mser==1
     % image to classify
-    image = imread("test_images/test3.png");
+    image = imread("test_images/test4.png");
     I = rgb2gray(image);
-
+    
     letters = textDetection(I);
 
-    hold on
-
-    % plot the image as a scatter
-    [w,h] = size(I);
-    [X,Y] = meshgrid(1:w,1:h);
-    X = reshape(X,[w*h,1]);
-    Y = reshape(Y,[w*h,1]);
-    S = 50*(normalize(reshape(I',[w*h,1]), 'range'))+1;
-    scatter(Y,X, S, '.');
-
-    scatter(letters.Location(:,1),letters.Location(:,2), 'go');
+    [~,~,nl] = size(letters);
+    %imshow(letters(:,:,2));
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Classify the detected letters %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-class = 9;
-
-% find a digit from the test set
-img = findDigit( mnistTestImg, mnistTestLbl, class);
-
 figure
-subplot(2,2,1)
-[pClass, pLoss] = mnistClassify( mnistMdl, img, model);
-plotNumber ( mnistTrainImg, mnistTrainLbl, pClass);
-title("Predicted Digit");
+for i = 1:nl
+    ltr = letters(:,:,i);
+    
+    subplot(3,nl,i)
+    [pClass, pLoss] = mnistClassify( mnistMdl, ltr, model);
+    plotNumber ( mnistTrainImg, mnistTrainLbl, pClass);
+    title("Predicted Digit");
 
-subplot(2,2,2)
-plotNumber ( mnistTrainImg, mnistTrainLbl, class);
-title("Actual Digit");
+    subplot(3,nl,nl+i)
+    imshow(letters(:,:,i));
+    title("Actual Digit");
 
-subplot(2,2,3)
-bar(0:9,pLoss)
-title("Digit Probability")
+    subplot(3,nl,2*nl+i)
+    bar(0:9,pLoss)
+    title("Digit Probability")
+end
 
-subplot(2,2,4)
+%subplot(2,2,4)
 %plot(1:10, mnistLoss(1,:), 1:10, mnistLoss(2,:));
 %legend("Testing Loss", "Training Loss");
 %xlabel("# of Nearest Neighbors")
@@ -113,17 +103,13 @@ subplot(2,2,4)
 function plotDigit(arr, ltrIdx)
 % plotDigit - plots a digit of the MNIST training set
     % plot the 3d array
-    surf(flipud(arr(:,:,ltrIdx)), 'EdgeColor','interp');
-    % look at the overview so it looks like a 2d image
-    view(2)
-    colormap('gray');
-    
+    imshow(flipud(arr(:,:,ltrIdx)));    
 end
 
 function [digit] = findDigit(dataset, labelset, label)
     idx = find(labelset == label);
     idx = idx(1); % just use the first one
-    digit = flipud(dataset(:,:,idx));
+    digit = dataset(:,:,idx);
 end
 
 function plotNumber(dataset, labelset, lblArr)
@@ -132,5 +118,5 @@ function plotNumber(dataset, labelset, lblArr)
     for n = lblArr
         word = [word findDigit(dataset,labelset,n)];
     end
-    surf(word,'EdgeColor','interp'); view(2); colormap('gray');
+    imshow(word);
 end
