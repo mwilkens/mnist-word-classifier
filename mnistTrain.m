@@ -12,7 +12,12 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
     testing = reshape( testImg, [w*h,d])';
     
     if strcmp(model,'svm')
-        
+        tmp = templateSVM('KernelFunction','Polynomial',...
+                            'PolynomialOrder', 4, 'KernelScale','auto',...
+                            'RemoveDuplicates', true, 'Solver', 'SMO',...
+                            'Verbose', 1);
+        mdl = fitcecoc(training,trainLbl,'Learners', tmp);
+        l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
     end
     
     if strcmp(model,'tree')
@@ -73,7 +78,7 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
         
        for i = 1:10
            mdl{i} = fitcknn(training, trainLbl, 'NumNeighbors',i);
-           l(:,i) = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+           l(:,i) = [loss(mdl{i}, testing, testLbl); resubLoss(mdl{i})];
        end
        
        [~, idx] = min(l(1,:));

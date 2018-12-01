@@ -9,8 +9,8 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-TRNN = 60000;
-TSTN = 10000;
+TRNN = 40000;
+TSTN = 8000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Extract the images from MNIST files    %
@@ -38,7 +38,9 @@ end
 
 train = 1;
 
-model = 'tree';
+% warning knn is VERY slow
+% do net if you want a fast training model
+model = 'knn';
 
 if train == 1
     [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, ...
@@ -54,7 +56,7 @@ mser = 1;
 
 if mser==1
     % image to classify
-    image = imread("test_images/test4.png");
+    image = imread("test_images/test3.png");
     I = rgb2gray(image);
     
     letters = textDetection(I);
