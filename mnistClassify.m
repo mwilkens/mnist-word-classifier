@@ -19,8 +19,9 @@ function [ltr,l] = mnistClassify(mdl, array, modelType)
     end
     
     if strcmp(modelType,'net')
-        ltr = round(mdl(img));
-        l=0;
+        l = round(mdl(img));
+        [~,ltr] = max(l);
+        ltr = ltr - 1;
     end
     
     if strcmp(modelType,'knn')

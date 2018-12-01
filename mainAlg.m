@@ -9,8 +9,8 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-TRNN = 6000;
-TSTN = 1000;
+TRNN = 60000;
+TSTN = 10000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Extract the images from MNIST files    %
@@ -36,13 +36,11 @@ end
 %  Train the letter classifier on MNIST data %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-train = 0;
+train = 1;
 
-model = 'knn';
+model = 'tree';
 
 if train == 1
-% neural network loss: 0.3425 (patternnet, 10 nodes, 10-fold crossval)
-% K-Nearest Neighbors (4 NN) loss: training: 0.0841, testing: 0.03811
     [mnistMdl, mnistLoss]  = mnistTrain(mnistTrainImg, mnistTrainLbl, ...
                                             mnistTestImg, mnistTestLbl, ...
                                             model);
@@ -86,15 +84,6 @@ for i = 1:nl
     bar(0:9,pLoss)
     title("Digit Probability")
 end
-
-%subplot(2,2,4)
-%plot(1:10, mnistLoss(1,:), 1:10, mnistLoss(2,:));
-%legend("Testing Loss", "Training Loss");
-%xlabel("# of Nearest Neighbors")
-%ylabel("Loss")
-%title("Performance estimate for KNN Parameter Optimization")
-
-%plotNumber( mnistTrainImg, mnistTrainLbl, [1 2 3 4 5 6]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Supplimentary Functions %

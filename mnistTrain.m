@@ -23,7 +23,7 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
     if strcmp(model,'net')
     
         ndata = [training;testing]';
-        nlbl  = [trainLbl;testLbl]';
+        nlbl  = dummyvar(categorical([trainLbl;testLbl]));
 
         trainS = length(trainLbl);
         testS  = length(testLbl);
@@ -34,23 +34,37 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
 
         if optimize == 1
             N = 30;
-            perf = zeros (1, N);
+            LYRS = 10;
+            perf = zeros (N,LYRS);
 
-            for k = 1:N
-                [net, l] = fitNet(ndata, nlbl, k, trainRatio);
-                perf(k) = l;
+            for ly = 1:LYRS
+                for k = 1:N
+                    [net, l] = fitNet(ndata, nlbl', repmat(k,1,ly), trainRatio);
+                    perf(k,ly) = l;
+                end
             end
 
-            %plot(loss)
+            figure
+            surf(perf);
 
             % find the best node combo
-            [~, idx] = min(perf);
+            minPerf = min(perf(:));
+            [n,l] = find(perf==minPerf);
+            idx = repmat(n,1,l);
         end
 
-        idx = 10; % override
+        if optimize == 0
+            idx = [30 30]; % override
+        end
 
-        % train the correct net    
-        [mdl,l] = fitNet(ndata,nlbl,idx,trainRatio);
+        % train the correct net 
+        ls = zeros(1,10);
+        for k=1:10
+            [mdls{k},ls(k)] = fitNet(ndata,nlbl',idx,trainRatio);
+        end
+        [~, idx] = min(ls);
+        mdl = mdls{idx};
+        l   = ls(idx);
     end
     
     if strcmp(model,'knn')
@@ -58,14 +72,13 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
        l = zeros(2,10);
         
        for i = 1:10
-           mdl = fitcknn(training, trainLbl, 'NumNeighbors',i);
+           mdl{i} = fitcknn(training, trainLbl, 'NumNeighbors',i);
            l(:,i) = [loss(mdl, testing, testLbl); resubLoss(mdl)];
-           i
        end
        
        [~, idx] = min(l(1,:));
-       mdl = fitcknn(training, trainLbl, 'NumNeighbors',idx);
-       l = [loss(mdl, testing, testLbl); resubLoss(mdl)];
+       mdl = mdl{idx};
+       l = [l(1,idx) l(2,idx)];
        
     end
 end
