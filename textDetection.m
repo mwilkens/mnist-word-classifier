@@ -1,5 +1,5 @@
 %Detect regions in a image that contain text
-function [ltrs] = textDetection(image)
+function [ltrs, centroids] = textDetection(image)
 % TEXTDETECTION finds objects in image and scales them for classification
 
     plot = 0;
@@ -210,4 +210,6 @@ function [ltrs] = textDetection(image)
         % resize to 20x20 pixels
         ltrs(:,:,i) = imresize(imgLarge', [20,20]);
     end
+
+    centroids = textBBoxes(:,1:2) .+ (textBBoxes(:,3:4)./2);
 end

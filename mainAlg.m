@@ -59,7 +59,7 @@ if mser==1
     image = imread("test_images/test3.png");
     I = rgb2gray(image);
     
-    letters = textDetection(I);
+    [letters,centroids] = textDetection(I);
 
     [~,~,nl] = size(letters);
     %imshow(letters(:,:,2));

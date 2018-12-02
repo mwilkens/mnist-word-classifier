@@ -9,13 +9,13 @@ Trained by the MNIST Letter database
 2. **[DONE]** Create some way of sharing our code with each other (github probably)
 3. Create framework algorithm with dummy functions as classifiers
     1. **[DONE]** parse the MNIST files
-    2. Classifier training implimentation
+    2. **[DONE]** Classifier training implimentation
     3. **[DONE]** Read image from file
-    4. Convolve through image
-    5. Mark centroids and letters where we find them
+    4. **[DONE]** Convolve through image
+    5. **[DONE]** Mark centroids and letters where we find them
     6. **[DONE]** construct word and output string
-4. Create letter classifier
-5. Create MNIST classifier
+4. **[DONE]** Create letter classifier
+5. **[DONE]** Create MNIST classifier
 6. Create Word construction algorithm
 7. Create presentation!!!
 
