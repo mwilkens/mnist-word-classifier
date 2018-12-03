@@ -1,5 +1,6 @@
+close all, clear all;
 % Main algorithm for MNIST classification
-
+ 
 % Files for MNIST
 % if you don't have these you can download them at:
 % http://yann.lecun.com/exdb/mnist/ 
@@ -9,8 +10,8 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-TRNN = 40000;
-TSTN = 8000;
+TRNN = 40;
+TSTN = 800;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Extract the images from MNIST files    %
@@ -64,7 +65,6 @@ if mser==1
     [~,~,nl] = size(letters);
     %imshow(letters(:,:,2));
 end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Classify the detected letters %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,6 +87,13 @@ for i = 1:nl
     title("Digit Probability")
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reconstruct the letters %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+rng(1); % or reproducibility
+[idx,C,sumd,D] = kmeans(centroids, 8,'Distance','correlation');
+figure;
+plot(idx(:,1),idx(:,2),'.');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Supplimentary Functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
