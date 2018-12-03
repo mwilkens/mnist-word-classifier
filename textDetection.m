@@ -181,6 +181,8 @@ function [ltrs, centroids] = textDetection(image)
     % create template array for letters
     ltrs = zeros(20,20,numletters);
     
+    centroids = textBBoxes(:,1:2) + (textBBoxes(:,3:4)./2);
+    
     % for each letter we need to:
     % 1. make the image square
     % 2. center the image
@@ -210,6 +212,4 @@ function [ltrs, centroids] = textDetection(image)
         % resize to 20x20 pixels
         ltrs(:,:,i) = imresize(imgLarge', [20,20]);
     end
-
-    centroids = textBBoxes(:,1:2) .+ (textBBoxes(:,3:4)./2);
 end

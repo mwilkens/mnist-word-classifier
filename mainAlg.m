@@ -1,4 +1,4 @@
-close all, clear all;
+%close all, clear all;
 % Main algorithm for MNIST classification
  
 % Files for MNIST
@@ -10,8 +10,8 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-TRNN = 40;
-TSTN = 800;
+TRNN = 24000;
+TSTN = 4000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Extract the images from MNIST files    %
@@ -37,7 +37,7 @@ end
 %  Train the letter classifier on MNIST data %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-train = 1;
+train = 0;
 
 % warning knn is VERY slow
 % do net if you want a fast training model
@@ -58,9 +58,9 @@ mser = 1;
 if mser==1
     % image to classify
     image = imread("test_images/test3.png");
-    I = rgb2gray(image);
+    Image = rgb2gray(image);
     
-    [letters,centroids] = textDetection(I);
+    [letters, centroids] = textDetection(Image);
 
     [~,~,nl] = size(letters);
     %imshow(letters(:,:,2));
@@ -87,13 +87,6 @@ for i = 1:nl
     title("Digit Probability")
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Reconstruct the letters %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rng(1); % or reproducibility
-[idx,C,sumd,D] = kmeans(centroids, 8,'Distance','correlation');
-figure;
-plot(idx(:,1),idx(:,2),'.');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Supplimentary Functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%

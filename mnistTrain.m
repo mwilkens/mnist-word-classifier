@@ -82,6 +82,7 @@ function [mdl, l] = mnistTrain(trainImg, trainLbl, testImg, testLbl, model)
        end
        
        [~, idx] = min(l(1,:));
+       %idx = 4;
        mdl = mdl{idx};
        l = [l(1,idx) l(2,idx)];
        
