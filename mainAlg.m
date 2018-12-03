@@ -10,8 +10,8 @@ TESTLBL_FILE = "t10k-labels-idx1-ubyte";
 TRAINIMG_FILE = "train-images-idx3-ubyte";
 TRAINLBL_FILE = "train-labels-idx1-ubyte";
 
-TRNN = 40;
-TSTN = 800;
+TRNN = 4000;
+TSTN = 6000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Extract the images from MNIST files    %
@@ -60,7 +60,7 @@ if mser==1
     image = imread("test_images/test3.png");
     I = rgb2gray(image);
     
-    [letters,centroids] = textDetection(I);
+    [letters,centroids,ITextRegion] = textDetection(I);
 
     [~,~,nl] = size(letters);
     %imshow(letters(:,:,2));
@@ -86,14 +86,7 @@ for i = 1:nl
     bar(0:9,pLoss)
     title("Digit Probability")
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Reconstruct the letters %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rng(1); % or reproducibility
-[idx,C,sumd,D] = kmeans(centroids, 8,'Distance','correlation');
-figure;
-plot(idx(:,1),idx(:,2),'.');
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Supplimentary Functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
